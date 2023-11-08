@@ -46,7 +46,7 @@ class WINPROCESSES_API UProcessWidget : public UUserWidget
 	UPROPERTY()
 	UProcessCreator* Creator;
 	
-	PROCESS_INFORMATION Info;
+	pid_t Info;
 
 	FString Status;
 

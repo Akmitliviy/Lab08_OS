@@ -2,12 +2,17 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
-#include <windows.h>
+#include <cstdio>
 #include <iostream>
-#include <conio.h>
 #include <chrono>
+#include <unistd.h>
+#include <cstdlib>
+#include <csignal>
+#include <cmath>
+#include <sched.h>
+#include <sys/resource.h>
+#include<sys/wait.h>
+#include <iostream>
 #include "ProcessCreator.generated.h"
 
 /**
@@ -19,15 +24,18 @@ class WINPROCESSES_API UProcessCreator : public UObject
 	GENERATED_BODY()
 	
 public:
-	bool CreateNewProcess(int index, PROCESS_INFORMATION& info);
+	bool CreateNewProcess(int index, pid_t& info);
 	int Suspend();
 	int Resume();
 	bool SetAffinity(unsigned int AffinityIn);
 	bool SetPriority(int PriorityIn);
 	void CloseProcess();
 	int GetTime();
+	unsigned int GetAffinity(cpu_set_t& mask);
+	int GetPriority();
+	void WaitForProcess(int signum);
 	
-	PROCESS_INFORMATION pi;
-	DWORD Priority;
+	int Priority;
+	pid_t pi;
 	std::chrono::high_resolution_clock::time_point StartPoint;
 };

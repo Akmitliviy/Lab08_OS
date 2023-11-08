@@ -12,7 +12,7 @@ void UProcessWidget::NativeConstruct()
 
 void UProcessWidget::SetActive()
 {
-	SetWidgetActive.Execute(Info.dwProcessId);
+	SetWidgetActive.Execute((int)Info);
 	BActivate->SetBackgroundColor(FLinearColor::Gray);
 }
 
@@ -21,7 +21,7 @@ void UProcessWidget::SetupProcess(int Index, FString Name)
 	Creator = NewObject<UProcessCreator>(this);
 	Creator->CreateNewProcess(Index, Info);
 	
-	TId->SetText(FText::FromString(FString::FromInt(Info.dwProcessId)));
+	TId->SetText(FText::FromString(FString::FromInt((int)Info)));
 	
 	TName->SetText(FText::FromString(Name));
 
@@ -35,7 +35,7 @@ void UProcessWidget::SetupProcess(int Index, FString Name)
 
 int UProcessWidget::GetId()
 {
-	return Info.dwProcessId;
+	return (int)Info;
 }
 
 UProcessCreator* UProcessWidget::GetProcessCreator()
@@ -45,12 +45,12 @@ UProcessCreator* UProcessWidget::GetProcessCreator()
 
 void UProcessWidget::UpdateInfo()
 {
-	if(WaitForSingleObject(Info.hProcess, 0) == 0)
+	
+	if(waitpid(Info, NULL, WNOHANG) != 0)
 	{
-		Creator->CloseProcess();
 		DeleteObject(Creator);
 
-		DeleteProcessWidget.Execute(Info.dwProcessId);
+		DeleteProcessWidget.Execute((int)Info);
 	}
 	
 	TStatus->SetText(FText::FromString(Status));
@@ -77,29 +77,7 @@ void UProcessWidget::ResetColor()
 
 FString UProcessWidget::GetPriority()
 {
-	switch(GetPriorityClass(Info.hProcess))
-	{
-	case REALTIME_PRIORITY_CLASS:
-		return "Realtime";
-		
-	case HIGH_PRIORITY_CLASS:
-		return "High";
-		
-	case ABOVE_NORMAL_PRIORITY_CLASS:
-		return "Above Normal";
-		
-	case NORMAL_PRIORITY_CLASS:
-		return "Normal";
-		
-	case BELOW_NORMAL_PRIORITY_CLASS:
-		return "Below Normal";
-		
-	case IDLE_PRIORITY_CLASS:
-		return "Low";
-		
-	default:
-		return "Unknown";
-	}
+	return FString::FromInt(Creator->GetPriority());
 }
 
 void UProcessWidget::CreatePriorityWidget()
@@ -133,9 +111,8 @@ void UProcessWidget::SetPriority(int PriorityIn)
 
 void UProcessWidget::CreateAffinityWidget()
 {
-	unsigned long long AffinityMask(0);
-	unsigned long long SystemMask(0);
-	GetProcessAffinityMask(Info.hProcess, &AffinityMask, &SystemMask);
+	cpu_set_t mask;
+	int AffinityMask = Creator->GetAffinity(mask);
 
 	if(AffinityWidget)
 	{

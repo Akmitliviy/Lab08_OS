@@ -7,7 +7,7 @@ void UAffinityWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	NumberOfCores = std::thread::hardware_concurrency();
+	NumberOfCores = sysconf(_SC_NPROCESSORS_ONLN);
 
 	BConfirm->OnClicked.AddDynamic(this, &UAffinityWidget::Confirm);
 	BExit->OnClicked.AddDynamic(this, &UAffinityWidget::Exit);
@@ -15,7 +15,7 @@ void UAffinityWidget::NativeConstruct()
 
 void UAffinityWidget::Confirm()
 {
-	unsigned long long AffinityMask(0);
+	unsigned int AffinityMask(0);
 	for(int i = 0; i < Cores.Num(); i++)
 	{
 		if(Cores[i]->IsChecked())

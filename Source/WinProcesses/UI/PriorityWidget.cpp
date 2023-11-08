@@ -18,37 +18,37 @@ void UPriorityWidget::NativeConstruct()
 
 void UPriorityWidget::SetRealtime()
 {
-	SetPriority.Execute(REALTIME_PRIORITY_CLASS);
+	SetPriority.Execute(-20);
 	Exit();
 }
 
 void UPriorityWidget::SetHigh()
 {
-	SetPriority.Execute(HIGH_PRIORITY_CLASS);
+	SetPriority.Execute(-15);
 	Exit();
 }
 
 void UPriorityWidget::SetAboveNormal()
 {
-	SetPriority.Execute(ABOVE_NORMAL_PRIORITY_CLASS);
+	SetPriority.Execute(-5);
 	Exit();
 }
 
 void UPriorityWidget::SetNormal()
 {
-	SetPriority.Execute(NORMAL_PRIORITY_CLASS);
+	SetPriority.Execute(0);
 	Exit();
 }
 
 void UPriorityWidget::SetBelowNormal()
 {
-	SetPriority.Execute(BELOW_NORMAL_PRIORITY_CLASS);
+	SetPriority.Execute(5);
 	Exit();
 }
 
 void UPriorityWidget::SetLow()
 {
-	SetPriority.Execute(IDLE_PRIORITY_CLASS);
+	SetPriority.Execute(19);
 	Exit();
 }
 

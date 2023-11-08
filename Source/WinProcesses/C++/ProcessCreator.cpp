@@ -3,82 +3,106 @@
 
 #include "ProcessCreator.h"
 
-bool UProcessCreator::CreateNewProcess(int index, PROCESS_INFORMATION& info)
+bool UProcessCreator::CreateNewProcess(int index, pid_t& Pid)
 {
-	STARTUPINFO si;
+    pid_t ProcessId = fork();
 
-	ZeroMemory(&si, sizeof(STARTUPINFO));
-	si.cb = sizeof(STARTUPINFO);
+    if(ProcessId < 0) {
+        return false;
+    }
+    else if(ProcessId == 0) {
 
-	wchar_t tabulation[150];
-	swprintf_s(tabulation, L"D:\\OS\\Lab03_OS\\FirstPart\\Tabulation\\x64\\Debug\\Tabulation.exe -100000 100000 2");
-	wchar_t Steam[150];
-	swprintf_s(Steam, L"C:\\Program Files (x86)\\Steam\\steam.exe");
-	wchar_t Regedit[150];
-	swprintf_s(Regedit, L"regedit");
-	wchar_t Sort[150];
-	swprintf_s(Sort, L"D:\\OS\\Lab03_OS\\Sort\\x64\\Debug\\Sort.exe");
+        char name[200];
+        switch (index) {
+            case 0:
+                sprintf(name, "/home/akmitliviy/CLionProjects/tabulation/cmake-build-debug/tabulation");
 
-	LPTSTR szCmdline;
-	switch(index)
-	{
-	case 0:
-		szCmdline = tabulation;
-		break;
-	case 1:
-		szCmdline = Steam;
-		break;
-	case 2:
-		szCmdline = Regedit;
-		break;
-	case 3:
-		szCmdline = Sort;
-		break;
-	default:
-		szCmdline = tabulation;
-	}
+                if (execl(name, name, std::to_string(0).c_str(), std::to_string(10000000).c_str(), std::to_string(2).c_str(), NULL) == -1) {
+                    exit(EXIT_FAILURE);
+                }
+                break;
+            case 1:
+                sprintf(name, "/usr/bin/qterminal");
 
-	StartPoint = std::chrono::high_resolution_clock::now();
-	if (!CreateProcess( nullptr, szCmdline, nullptr, nullptr, FALSE, CREATE_NEW_CONSOLE, nullptr, nullptr, &si, &pi ))
-	{
-		return false;
-	}
+                if (execl(name, name, NULL) == -1) {
+                    exit(EXIT_FAILURE);
+                }
+                break;
+            default:
+                exit(EXIT_FAILURE);
+        }
 
-	Priority = REALTIME_PRIORITY_CLASS;
-	SetPriorityClass(pi.hProcess, Priority);
-	info = pi;
-	return true;
+    }
+    StartPoint = std::chrono::high_resolution_clock::now();
+    signal(SIGCHLD, WaitForProcess);
+
+    Pid = ProcessId;
+    return true;
 }
 
 int UProcessCreator::Suspend()
 {
-	return SuspendThread(pi.hThread);
+    return kill(pi, SIGSTOP);
 }
 
 int UProcessCreator::Resume()
 {
-	return ResumeThread(pi.hThread);
+    return kill(pi, SIGCONT);
+}
+
+unsigned int UProcessCreator::GetAffinity(cpu_set_t& mask)
+{
+    int numCPU = sysconf(_SC_NPROCESSORS_ONLN);
+    unsigned int dMask(0);
+
+    sched_getaffinity(pi, sizeof(mask), &mask);
+    for(int i = 0; i < numCPU; i++){
+        if(CPU_ISSET(i, &mask) != 0){
+            dMask += pow(2, i);
+        }
+    }
+    return dMask;
 }
 
 bool UProcessCreator::SetAffinity(unsigned int AffinityIn)
 {
-	return SetProcessAffinityMask(pi.hProcess, AffinityIn);
+    int numCPU = sysconf(_SC_NPROCESSORS_ONLN);
+    cpu_set_t mask;
+    CPU_ZERO(&mask);
+
+    for (int i = 0; i < numCPU; i++) {
+        if (AffinityIn & static_cast<unsigned int>(pow(2, i))) {
+            CPU_SET(i, &mask);
+        }
+    }
+
+    return sched_setaffinity(pi, sizeof(mask), &mask);
+}
+
+int UProcessCreator::GetPriority()
+{
+    Priority = getpriority(PRIO_PROCESS, pi);
+    return Priority;
 }
 
 bool UProcessCreator::SetPriority(int PriorityIn)
 {
-	Priority = PriorityIn;
-	return SetPriorityClass(pi.hProcess, Priority);
+    Priority = PriorityIn;
+    return setpriority(PRIO_PROCESS, pi, PriorityIn);
 }
 
 void UProcessCreator::CloseProcess()
 {
-	CloseHandle(pi.hProcess);
-	CloseHandle(pi.hThread);
+    kill(pi, SIGKILL);
 }
 
-int UProcessCreator::GetTime(){
-	std::chrono::high_resolution_clock::time_point EndPoint = std::chrono::high_resolution_clock::now();
-	std::chrono::microseconds EvaluatedTime = std::chrono::duration_cast<std::chrono::microseconds>(EndPoint - StartPoint);
-	return static_cast<int>(EvaluatedTime.count()) * pow(10.0, -6);
+int UProcessCreator::GetTime()
+{
+    std::chrono::high_resolution_clock::time_point EndPoint = std::chrono::high_resolution_clock::now();
+    std::chrono::microseconds EvaluatedTime = std::chrono::duration_cast<std::chrono::microseconds>(EndPoint - StartPoint);
+    return static_cast<int>(EvaluatedTime.count()) * pow(10.0, -6);
+}
+
+void UProcessCreator::WaitForProcess(int signum){
+    wait(NULL);
 }
