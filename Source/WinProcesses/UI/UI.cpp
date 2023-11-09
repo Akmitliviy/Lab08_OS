@@ -19,7 +19,7 @@ void UUI::NativeConstruct()
 	BCreateProcess->OnClicked.AddDynamic(this, &UUI::Create);
 	BSuspend->OnClicked.AddDynamic(this, &UUI::Suspend);
 	BResume->OnClicked.AddDynamic(this, &UUI::Resume);
-	BSetAffinity->OnClicked.AddDynamic(this, &UUI::SetAffinity);
+	//BSetAffinity->OnClicked.AddDynamic(this, &UUI::SetAffinity);
 	BSetPriority->OnClicked.AddDynamic(this, &UUI::SetPriority);
 
 	ActiveProcess = 0;
@@ -88,14 +88,14 @@ void UUI::Resume()
 
 void UUI::SetAffinity()
 {
-	if(ActiveProcess)
-	{
-		UProcessWidget* LocalProc = *Processes.Find(ActiveProcess);
-		if(LocalProc)
-		{
-			LocalProc->CreateAffinityWidget();
-		}
-	}
+	// if(ActiveProcess)
+	// {
+	// 	UProcessWidget* LocalProc = *Processes.Find(ActiveProcess);
+	// 	if(LocalProc)
+	// 	{
+	// 		LocalProc->CreateAffinityWidget();
+	// 	}
+	// }
 }
 
 void UUI::SetPriority()

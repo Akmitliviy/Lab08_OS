@@ -3,6 +3,8 @@
 
 #include "ProcessCreator.h"
 
+void WaitForProcess(int signum);
+
 bool UProcessCreator::CreateNewProcess(int index, pid_t& Pid)
 {
     pid_t ProcessId = fork();
@@ -12,21 +14,21 @@ bool UProcessCreator::CreateNewProcess(int index, pid_t& Pid)
     }
     else if(ProcessId == 0) {
 
-        char name[200];
         switch (index) {
             case 0:
-                sprintf(name, "/home/akmitliviy/CLionProjects/tabulation/cmake-build-debug/tabulation");
 
-                if (execl(name, name, std::to_string(0).c_str(), std::to_string(10000000).c_str(), std::to_string(2).c_str(), NULL) == -1) {
+                //if (execl("/Users/bossofthisgym/build-tabulation-Desktop_arm_darwin_generic_mach_o_64bit-Debug/tabulation", "tabulation", std::to_string(0).c_str(), std::to_string(100000000).c_str(), std::to_string(1).c_str(), NULL) == -1) {
+                if (execl("/home/akmitliviy/CLionProjects/tabulation/cmake-build-debug/tabulation", "tabulation", std::to_string(0).c_str(), std::to_string(100000000).c_str(), std::to_string(1).c_str(), NULL) == -1) {
                     exit(EXIT_FAILURE);
                 }
                 break;
             case 1:
-                sprintf(name, "/usr/bin/qterminal");
 
-                if (execl(name, name, NULL) == -1) {
+                //if (execl("/Users/bossofthisgym/Documents/Output/Sort", "Sort", NULL) == -1) {
+                if (execl("/home/akmitliviy/CLionProjects/Sort/cmake-build-debug/Sort", "Sort", NULL) == -1) {
                     exit(EXIT_FAILURE);
                 }
+            
                 break;
             default:
                 exit(EXIT_FAILURE);
@@ -37,6 +39,7 @@ bool UProcessCreator::CreateNewProcess(int index, pid_t& Pid)
     signal(SIGCHLD, WaitForProcess);
 
     Pid = ProcessId;
+    pi = ProcessId;
     return true;
 }
 
@@ -50,34 +53,34 @@ int UProcessCreator::Resume()
     return kill(pi, SIGCONT);
 }
 
-unsigned int UProcessCreator::GetAffinity(cpu_set_t& mask)
-{
-    int numCPU = sysconf(_SC_NPROCESSORS_ONLN);
-    unsigned int dMask(0);
+// unsigned int UProcessCreator::GetAffinity(cpu_set_t& mask)
+// {
+//     int numCPU = sysconf(_SC_NPROCESSORS_ONLN);
+//     unsigned int dMask(0);
+//
+//     sched_getaffinity(pi, sizeof(mask), &mask);
+//     for(int i = 0; i < numCPU; i++){
+//         if(CPU_ISSET(i, &mask) != 0){
+//             dMask += pow(2, i);
+//         }
+//     }
+//     return dMask;
+// }
 
-    sched_getaffinity(pi, sizeof(mask), &mask);
-    for(int i = 0; i < numCPU; i++){
-        if(CPU_ISSET(i, &mask) != 0){
-            dMask += pow(2, i);
-        }
-    }
-    return dMask;
-}
-
-bool UProcessCreator::SetAffinity(unsigned int AffinityIn)
-{
-    int numCPU = sysconf(_SC_NPROCESSORS_ONLN);
-    cpu_set_t mask;
-    CPU_ZERO(&mask);
-
-    for (int i = 0; i < numCPU; i++) {
-        if (AffinityIn & static_cast<unsigned int>(pow(2, i))) {
-            CPU_SET(i, &mask);
-        }
-    }
-
-    return sched_setaffinity(pi, sizeof(mask), &mask);
-}
+// bool UProcessCreator::SetAffinity(unsigned int AffinityIn)
+// {
+//     int numCPU = sysconf(_SC_NPROCESSORS_ONLN);
+//     cpu_set_t mask;
+//     CPU_ZERO(&mask);
+//
+//     for (int i = 0; i < numCPU; i++) {
+//         if (AffinityIn & static_cast<unsigned int>(pow(2, i))) {
+//             CPU_SET(i, &mask);
+//         }
+//     }
+//
+//     return sched_setaffinity(pi, sizeof(mask), &mask);
+// }
 
 int UProcessCreator::GetPriority()
 {
@@ -103,6 +106,6 @@ int UProcessCreator::GetTime()
     return static_cast<int>(EvaluatedTime.count()) * pow(10.0, -6);
 }
 
-void UProcessCreator::WaitForProcess(int signum){
+void WaitForProcess(int signum){
     wait(NULL);
 }

@@ -3,6 +3,8 @@
 
 #include "ProcessWidget.h"
 
+#include "ObjectTools.h"
+
 void UProcessWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -48,8 +50,6 @@ void UProcessWidget::UpdateInfo()
 	
 	if(waitpid(Info, NULL, WNOHANG) != 0)
 	{
-		DeleteObject(Creator);
-
 		DeleteProcessWidget.Execute((int)Info);
 	}
 	
@@ -111,34 +111,34 @@ void UProcessWidget::SetPriority(int PriorityIn)
 
 void UProcessWidget::CreateAffinityWidget()
 {
-	cpu_set_t mask;
-	int AffinityMask = Creator->GetAffinity(mask);
-
-	if(AffinityWidget)
-	{
-		if(!AffinityWidget->IsInViewport())
-		{
-			AffinityWidget->AddToViewport();
-			AffinityWidget->SetupAffinity(AffinityMask);
-		}
-		return;
-	}
-	
-	if(AffinityClass)
-	{
-		AffinityWidget = CreateWidget<UAffinityWidget>(GetWorld()->GetFirstPlayerController(), AffinityClass);
-
-		if(AffinityWidget)
-		{
-			AffinityWidget->SetAffinity.BindDynamic(this, &UProcessWidget::SetAffinity);
-			AffinityWidget->AddToViewport();
-			AffinityWidget->SetupAffinity(AffinityMask);
-		}
-	}
+	// cpu_set_t mask;
+	// int AffinityMask = Creator->GetAffinity(mask);
+	//
+	// if(AffinityWidget)
+	// {
+	// 	if(!AffinityWidget->IsInViewport())
+	// 	{
+	// 		AffinityWidget->AddToViewport();
+	// 		AffinityWidget->SetupAffinity(AffinityMask);
+	// 	}
+	// 	return;
+	// }
+	//
+	// if(AffinityClass)
+	// {
+	// 	AffinityWidget = CreateWidget<UAffinityWidget>(GetWorld()->GetFirstPlayerController(), AffinityClass);
+	//
+	// 	if(AffinityWidget)
+	// 	{
+	// 		AffinityWidget->SetAffinity.BindDynamic(this, &UProcessWidget::SetAffinity);
+	// 		AffinityWidget->AddToViewport();
+	// 		AffinityWidget->SetupAffinity(AffinityMask);
+	// 	}
+	// }
 }
 
-void UProcessWidget::SetAffinity(unsigned int AffinityIn)
-{
-	Creator->SetAffinity(AffinityIn);
-	AffinityWidget->RemoveFromViewport();
-}
+// void UProcessWidget::SetAffinity(unsigned int AffinityIn)
+// {
+// 	Creator->SetAffinity(AffinityIn);
+// 	AffinityWidget->RemoveFromViewport();
+// }

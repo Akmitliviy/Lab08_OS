@@ -10,5 +10,8 @@ public class WinProcessesTarget : TargetRules
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		ExtraModuleNames.AddRange( new string[] { "WinProcesses" } );
+        
+		bOverrideBuildEnvironment = true; 
+		AdditionalCompilerArguments = "-Wno-unused-but-set-variable";
 	}
 }

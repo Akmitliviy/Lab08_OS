@@ -25,5 +25,9 @@
 				"Android"
 			]
 		}
+	],
+	"TargetPlatforms": [
+		"LinuxAArch64NoEditor",
+		"LinuxNoEditor"
 	]
 }

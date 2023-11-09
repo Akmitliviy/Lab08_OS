@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
+#define _GNU_SOURCE
 
 #include <cstdio>
 #include <iostream>
@@ -15,6 +16,8 @@
 #include <iostream>
 #include "ProcessCreator.generated.h"
 
+
+
 /**
  * 
  */
@@ -27,13 +30,12 @@ public:
 	bool CreateNewProcess(int index, pid_t& info);
 	int Suspend();
 	int Resume();
-	bool SetAffinity(unsigned int AffinityIn);
+	//bool SetAffinity(unsigned int AffinityIn);
 	bool SetPriority(int PriorityIn);
 	void CloseProcess();
 	int GetTime();
-	unsigned int GetAffinity(cpu_set_t& mask);
+	//unsigned int GetAffinity(cpu_set_t& mask);
 	int GetPriority();
-	void WaitForProcess(int signum);
 	
 	int Priority;
 	pid_t pi;

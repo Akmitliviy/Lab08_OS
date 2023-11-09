@@ -10,5 +10,8 @@ public class WinProcessesEditorTarget : TargetRules
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		ExtraModuleNames.AddRange( new string[] { "WinProcesses" } );
+        
+		bOverrideBuildEnvironment = true; 
+		AdditionalCompilerArguments = "-Wno-unused-but-set-variable";
 	}
 }

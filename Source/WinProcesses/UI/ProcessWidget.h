@@ -105,7 +105,7 @@ public:
 	UFUNCTION()
 	void CreateAffinityWidget();
 
-	UFUNCTION()
-	void SetAffinity(unsigned int AffinityIn);
+	// UFUNCTION()
+	// void SetAffinity(unsigned int AffinityIn);
 
 };

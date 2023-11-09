@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
-#include <windows.h>
 #include "PriorityWidget.generated.h"
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FSetPriority, int, Priority);
