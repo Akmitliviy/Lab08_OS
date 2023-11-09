@@ -107,5 +107,5 @@ int UProcessCreator::GetTime()
 }
 
 void WaitForProcess(int signum){
-    wait(NULL);
+    waitpid(0, NULL, WNOHANG);
 }

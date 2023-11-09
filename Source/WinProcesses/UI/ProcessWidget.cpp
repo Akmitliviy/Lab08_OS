@@ -48,7 +48,7 @@ UProcessCreator* UProcessWidget::GetProcessCreator()
 void UProcessWidget::UpdateInfo()
 {
 	
-	if(waitpid(Info, NULL, WNOHANG) != 0)
+	if(waitpid(Info, NULL, WNOHANG) == -1)
 	{
 		DeleteProcessWidget.Execute((int)Info);
 	}
