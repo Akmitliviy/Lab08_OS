@@ -8,6 +8,12 @@
 #include "Components/Button.h"
 #include "Components/ComboBoxString.h"
 #include "Components/ScrollBox.h"
+#include "ctime"
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "UI.generated.h"
 
 class APlayerController;
@@ -40,6 +46,12 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
 	UScrollBox* SProcessesList;
+
+	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
+	UButton* BDenyAccess;
+
+	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
+	UTextBlock* TDenyAccess;
 	
 	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
 	UComboBoxString* DSelector;
@@ -53,6 +65,12 @@ public:
 	int ActiveProcess;
 	
 	FTimerHandle Handle;
+	
+	const char* LOG_PATH;
+
+	int LogFile;
+	
+	bool bDenyAccess = true;
 
 	UFUNCTION()
 	void SetActiveWidget(int ProcessNumberIn);
@@ -77,4 +95,13 @@ public:
 
 	UFUNCTION()
 	void UpdateInfo();
+
+	UFUNCTION()
+	void DenyAccess();
+
+	bool OpenLogFile();
+
+	bool WriteLogFile(std::string Message);
+
+    std::string GetDateTime();
 };

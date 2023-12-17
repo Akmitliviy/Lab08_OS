@@ -17,15 +17,15 @@ bool UProcessCreator::CreateNewProcess(int index, pid_t& Pid)
         switch (index) {
             case 0:
 
-                //if (execl("/Users/bossofthisgym/build-tabulation-Desktop_arm_darwin_generic_mach_o_64bit-Debug/tabulation", "tabulation", std::to_string(0).c_str(), std::to_string(100000000).c_str(), std::to_string(1).c_str(), NULL) == -1) {
-                if (execl("/home/akmitliviy/CLionProjects/tabulation/cmake-build-debug/tabulation", "tabulation", std::to_string(0).c_str(), std::to_string(100000000).c_str(), std::to_string(1).c_str(), NULL) == -1) {
+                if (execl("/Users/bossofthisgym/build-tabulation-Desktop_arm_darwin_generic_mach_o_64bit-Debug/tabulation", "tabulation", std::to_string(0).c_str(), std::to_string(100000000).c_str(), std::to_string(1).c_str(), NULL) == -1) {
+                //if (execl("/home/akmitliviy/CLionProjects/tabulation/cmake-build-debug/tabulation", "tabulation", std::to_string(0).c_str(), std::to_string(100000000).c_str(), std::to_string(1).c_str(), NULL) == -1) {
                     exit(EXIT_FAILURE);
                 }
                 break;
             case 1:
 
-                //if (execl("/Users/bossofthisgym/Documents/Output/Sort", "Sort", NULL) == -1) {
-                if (execl("/home/akmitliviy/CLionProjects/Sort/cmake-build-debug/Sort", "Sort", NULL) == -1) {
+                if (execl("/Users/bossofthisgym/Documents/Output/Sort", "Sort", NULL) == -1) {
+                //if (execl("/home/akmitliviy/CLionProjects/Sort/cmake-build-debug/Sort", "Sort", NULL) == -1) {
                     exit(EXIT_FAILURE);
                 }
             
